@@ -12,12 +12,33 @@
     * {
       box-sizing: border-box;
       font-family: "Segoe UI", Arial, sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    :root {
+      --bg: #f4f6f8;
+      --card: #ffffff;
+      --text: #222;
+      --muted: #666;
+      --primary: #0d6efd;
+      --success: #198754;
+      --glow: rgba(13,110,253,.6);
+    }
+
+    body.dark {
+      --bg: #0f172a;
+      --card: #020617;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --success: #22c55e;
+      --glow: rgba(59,130,246,.8);
     }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #0d6efd, #6f42c1);
+      background: var(--bg);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -25,39 +46,49 @@
     }
 
     .container {
-      background: #ffffff;
       width: 100%;
       max-width: 420px;
+      background: var(--card);
       padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
       text-align: center;
+      position: relative;
+    }
+
+    .toggle {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      cursor: pointer;
+      font-size: 20px;
     }
 
     h1 {
-      margin: 0 0 10px;
-      font-size: 24px;
-      color: #333;
+      margin: 0 0 8px;
+      color: var(--text);
     }
 
     p {
       margin: 0 0 20px;
       font-size: 14px;
-      color: #666;
+      color: var(--muted);
     }
 
     input {
       width: 100%;
       padding: 12px;
       font-size: 15px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      border-radius: 10px;
+      border: 1px solid #4443;
+      background: transparent;
+      color: var(--text);
       margin-bottom: 15px;
       outline: none;
     }
 
-    input:focus {
-      border-color: #0d6efd;
+    input::placeholder {
+      color: var(--muted);
     }
 
     button {
@@ -65,15 +96,14 @@
       padding: 12px;
       font-size: 16px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      background: #0d6efd;
+      background: var(--primary);
       color: #fff;
-      transition: 0.2s;
     }
 
     button:hover {
-      background: #0b5ed7;
+      opacity: .9;
     }
 
     #qrcode {
@@ -82,24 +112,38 @@
       justify-content: center;
     }
 
+    /* === CARTOON ANIMATION === */
+    .qr-animate {
+      animation: pop 0.6s ease-out, glow 1.2s ease-out;
+      border-radius: 12px;
+    }
+
+    @keyframes pop {
+      0%   { transform: scale(0) rotate(-15deg); }
+      60%  { transform: scale(1.15) rotate(3deg); }
+      100% { transform: scale(1) rotate(0); }
+    }
+
+    @keyframes glow {
+      0%   { box-shadow: 0 0 0 var(--glow); }
+      50%  { box-shadow: 0 0 25px var(--glow); }
+      100% { box-shadow: none; }
+    }
+
     .actions {
       display: none;
-      gap: 10px;
     }
 
     .actions button {
-      background: #198754;
-    }
-
-    .actions button:hover {
-      background: #157347;
+      background: var(--success);
     }
 
     footer {
       margin-top: 20px;
       font-size: 12px;
-      color: #888;
+      color: var(--muted);
     }
+
     .footer-link {
     color: #0f766e; /* senada header */
     text-decoration: none;
@@ -114,8 +158,10 @@
 <body>
 
   <div class="container">
-    <h1>🔗 QR Code Generator</h1>
-    <p>Ubah link apa pun menjadi QR Code</p>
+    <div class="toggle" onclick="toggleTheme()">🌙</div>
+
+    <h1>🎉 QR Code Generator</h1>
+    <p>Masukkan link, QR muncul dengan animasi 😄</p>
 
     <input type="text" id="link" placeholder="https://contoh.com">
 
@@ -146,7 +192,7 @@
       actions.style.display = "none";
 
       if (!link) {
-        alert("Masukkan link terlebih dahulu!");
+        alert("Masukkan link dulu 😄");
         return;
       }
 
@@ -159,7 +205,13 @@
         correctLevel: QRCode.CorrectLevel.H
       });
 
-      actions.style.display = "flex";
+      // kasih animasi kartun
+      setTimeout(() => {
+        const img = qrDiv.querySelector("img");
+        if (img) img.classList.add("qr-animate");
+      }, 50);
+
+      actions.style.display = "block";
     }
 
     function downloadQR() {
@@ -170,6 +222,18 @@
       link.href = img.src;
       link.download = "qr-code-mafdal.png";
       link.click();
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      const dark = document.body.classList.contains("dark");
+      localStorage.setItem("theme", dark ? "dark" : "light");
+      document.querySelector(".toggle").textContent = dark ? "☀" : "🌙";
+    }
+
+    if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark");
+      document.querySelector(".toggle").textContent = "☀";
     }
   </script>
 
