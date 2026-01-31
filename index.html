@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>QR Code Generator | Mafdal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- QRCode Library -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0d6efd, #6f42c1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: #ffffff;
+      width: 100%;
+      max-width: 420px;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 24px;
+      color: #333;
+    }
+
+    p {
+      margin: 0 0 20px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #0d6efd;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #0d6efd;
+      color: #fff;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #0b5ed7;
+    }
+
+    #qrcode {
+      margin: 20px 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    .actions {
+      display: none;
+      gap: 10px;
+    }
+
+    .actions button {
+      background: #198754;
+    }
+
+    .actions button:hover {
+      background: #157347;
+    }
+
+    footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🔗 QR Code Generator</h1>
+    <p>Ubah link apa pun menjadi QR Code</p>
+
+    <input type="text" id="link" placeholder="https://contoh.com">
+
+    <button onclick="generateQR()">Buat QR Code</button>
+
+    <div id="qrcode"></div>
+
+    <div class="actions" id="actions">
+      <button onclick="downloadQR()">⬇ Download QR</button>
+    </div>
+
+    <footer>
+      Created by Mafdal © 2026
+    </footer>
+  </div>
+
+  <script>
+    let qr;
+
+    function generateQR() {
+      const link = document.getElementById("link").value.trim();
+      const qrDiv = document.getElementById("qrcode");
+      const actions = document.getElementById("actions");
+
+      qrDiv.innerHTML = "";
+      actions.style.display = "none";
+
+      if (!link) {
+        alert("Masukkan link terlebih dahulu!");
+        return;
+      }
+
+      qr = new QRCode(qrDiv, {
+        text: link,
+        width: 220,
+        height: 220,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      actions.style.display = "flex";
+    }
+
+    function downloadQR() {
+      const img = document.querySelector("#qrcode img");
+      if (!img) return;
+
+      const link = document.createElement("a");
+      link.href = img.src;
+      link.download = "qr-code-mafdal.png";
+      link.click();
+    }
+  </script>
+
+</body>
+</html>
